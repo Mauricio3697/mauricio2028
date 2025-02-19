@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carteira MM - Projeções</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen p-6">
+    <div class="bg-white shadow-md rounded-lg p-4 max-w-sm mx-auto text-center">
+        <h2 class="text-xl font-semibold text-gray-800 mb-3">Navegação</h2>
+        <nav class="space-y-2">
+          <a href="livros.html" class="block text-gray-700 hover:text-blue-600 transition">📚 Plano de Leitura</a>
+          <a href="calculado.html" class="block text-gray-700 hover:text-green-600 transition">📊 Calculadora</a>
+          <a href="carreira.html" class="block text-gray-700 hover:text-purple-600 transition">🚀 Planejamento</a>
+          <a href="index.html" class="block text-gray-700 hover:text-purple-600 transition"> 3 Portfólio</a>
+        </nav>
+      </div>
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-8 animate-slide">
+            <h1 class="text-4xl font-bold text-blue-800 mb-2">Carteira Mauricio Matheus</h1>
+            <p class="text-xl text-gray-600">Projeções de Investimento - R$500/mês</p>
+        </header>
+
+        <!-- Controles -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card">
+            <h2 class="text-xl font-bold text-blue-700 mb-4">Parâmetros da Simulação</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Aporte Mensal (R$)</label>
+                    <input type="number" id="monthly-input" value="500" class="w-full rounded-lg border-gray-300 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Período (Anos)</label>
+                    <input type="number" id="years" value="10" class="w-full rounded-lg border-gray-300 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Inflação Projetada (%)</label>
+                    <input type="number" id="inflation" value="4.5" class="w-full rounded-lg border-gray-300 focus:ring-blue-500">
+                </div>
+            </div>
+            <button onclick="updateProjections()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Atualizar Projeções
+            </button>
+        </div>
+
+        <!-- Projeções -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 card">
+                <h2 class="text-xl font-bold text-blue-700 mb-4">Projeção de Patrimônio</h2>
+                <canvas id="wealth-chart" height="250"></canvas>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card">
+                <h2 class="text-xl font-bold text-blue-700 mb-4">Distribuição Recomendada</h2>
+                <canvas id="allocation-chart" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Detalhes -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 card">
+                <h3 class="text-lg font-bold text-blue-700 mb-3">Renda Variável (60%)</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Aporte Mensal:</span>
+                        <span class="font-bold">R$ 300,00</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-2">
+                        <p class="mb-1">Distribuição Sugerida:</p>
+                        <ul class="list-disc pl-4">
+                            <li>TAEE4: 15%</li>
+                            <li>SAPR4: 20%</li>
+                            <li>ITSA4: 15%</li>
+                            <li>VALE3: 10%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card">
+                <h3 class="text-lg font-bold text-blue-700 mb-3">Renda Fixa (30%)</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Aporte Mensal:</span>
+                        <span class="font-bold">R$ 150,00</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-2">
+                        <p class="mb-1">Alocação Sugerida:</p>
+                        <ul class="list-disc pl-4">
+                            <li>Tesouro SELIC: 20%</li>
+                            <li>CDB 120% CDI: 10%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card">
+                <h3 class="text-lg font-bold text-blue-700 mb-3">Reserva (10%)</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Aporte Mensal:</span>
+                        <span class="font-bold">R$ 50,00</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-2">
+                        <p class="mb-1">Alocação Sugerida:</p>
+                        <ul class="list-disc pl-4">
+                            <li>Poupança: 10%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let wealthChart = null;
+        let allocationChart = null;
+
+        function calculateProjections(monthlyAmount, years, inflation) {
+            const monthlyRV = monthlyAmount * 0.6;
+            const monthlySelic = monthlyAmount * 0.3;
+            const monthlyPoupanca = monthlyAmount * 0.1;
+
+            const rvReturn = 0.12; // 12% a.a.
+            const selicReturn = 0.1075; // 10.75% a.a.
+            const poupancaReturn = 0.065; // 6.5% a.a.
+
+            const realRvReturn = (1 + rvReturn) / (1 + inflation/100) - 1;
+            const realSelicReturn = (1 + selicReturn) / (1 + inflation/100) - 1;
+            const realPoupancaReturn = (1 + poupancaReturn) / (1 + inflation/100) - 1;
+
+            const projections = Array.from({length: years + 1}, (_, year) => {
+                const rvValue = monthlyRV * 12 * year * Math.pow(1 + realRvReturn, year);
+                const selicValue = monthlySelic * 12 * year * Math.pow(1 + realSelicReturn, year);
+                const poupancaValue = monthlyPoupanca * 12 * year * Math.pow(1 + realPoupancaReturn, year);
+
+                return {
+                    year: year,
+                    rv: rvValue,
+                    selic: selicValue,
+                    poupanca: poupancaValue,
+                    total: rvValue + selicValue + poupancaValue
+                };
+            });
+
+            return projections;
+        }
+
+        function updateCharts() {
+            const monthlyAmount = parseFloat(document.getElementById('monthly-input').value);
+            const years = parseInt(document.getElementById('years').value);
+            const inflation = parseFloat(document.getElementById('inflation').value);
+
+            const projections = calculateProjections(monthlyAmount, years, inflation);
+
+            // Update Wealth Chart
+            const wealthCtx = document.getElementById('wealth-chart').getContext('2d');
+            if (wealthChart) wealthChart.destroy();
+
+            wealthChart = new Chart(wealthCtx, {
+                type: 'line',
+                data: {
+                    labels: projections.map(p => `Ano ${p.year}`),
+                    datasets: [{
+                        label: 'Renda Variável',
+                        data: projections.map(p => p.rv),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'Tesouro SELIC',
+                        data: projections.map(p => p.selic),
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'Poupança',
+                        data: projections.map(p => p.poupanca),
+                        borderColor: 'rgb(245, 158, 11)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => `R$ ${value.toLocaleString()}`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Update Allocation Chart
+            const allocationCtx = document.getElementById('allocation-chart').getContext('2d');
+            if (allocationChart) allocationChart.destroy();
+
+            allocationChart = new Chart(allocationCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['TAEE4 (15%)', 'SAPR4 (20%)', 'ITSA4 (15%)', 'VALE3 (10%)', 'Tesouro SELIC (20%)', 'CDB (10%)', 'Poupança (10%)'],
+                    datasets: [{
+                        data: [15, 20, 15, 10, 20, 10, 10],
+                        backgroundColor: [
+                            '#3B82F6', '#10B981', '#6366F1', '#F59E0B',
+                            '#8B5CF6', '#EC4899', '#6B7280'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 1000,
+                        animateRotate: true
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateProjections() {
+            updateCharts();
+        }
+
+        // Initial load
+        updateCharts();
+    </script>
+</body>
+</html>

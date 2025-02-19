@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Investimentos Avançada</title>
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
+  <div class="bg-white shadow-md rounded-lg p-4 max-w-sm mx-auto text-center">
+    <h2 class="text-xl font-semibold text-gray-800 mb-3">Navegação</h2>
+    <nav class="space-y-2">
+      <a href="livros.html" class="block text-gray-700 hover:text-blue-600 transition">📚 Plano de Leitura</a>
+      <a href="calculado.html" class="block text-gray-700 hover:text-green-600 transition">📊 Calculadora</a>
+      <a href="carreira.html" class="block text-gray-700 hover:text-purple-600 transition">🚀 Planejamento</a>
+      <a href="index.html" class="block text-gray-700 hover:text-purple-600 transition"> 3 Portfólio</a>
+    </nav>
+  </div>
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-blue-800 mb-8">Calculadora de Investimentos Avançada</h1>
+    
+    <!-- Seção: Método Bazin -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-bold text-blue-600 mb-4">Método Bazin</h2>
+      <form id="bazinForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">Dividendos (R$):</label>
+          <input type="number" id="bazinDividend" class="w-full border rounded p-2" placeholder="Ex.: 120" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Taxa de Crescimento (% ao ano):</label>
+          <input type="number" id="bazinGrowth" class="w-full border rounded p-2" placeholder="Ex.: 5" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Taxa de Desconto (%):</label>
+          <input type="number" id="bazinDiscount" class="w-full border rounded p-2" placeholder="Ex.: 10" />
+        </div>
+        <div class="md:col-span-2">
+          <button type="button" onclick="calculateBazin()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">Calcular Valor Intrínseco (Bazin)</button>
+        </div>
+      </form>
+      <div id="bazinResult" class="mt-4 text-xl font-bold text-blue-800"></div>
+    </div>
+    
+    <!-- Seção: Método Graham -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-bold text-blue-600 mb-4">Método Graham</h2>
+      <form id="grahamForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">Lucro por Ação (EPS):</label>
+          <input type="number" id="grahamEPS" class="w-full border rounded p-2" placeholder="Ex.: 3.5" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Valor Patrimonial por Ação (Book Value):</label>
+          <input type="number" id="grahamBV" class="w-full border rounded p-2" placeholder="Ex.: 20" />
+        </div>
+        <div class="md:col-span-2">
+          <button type="button" onclick="calculateGraham()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">Calcular Valor Intrínseco (Graham)</button>
+        </div>
+      </form>
+      <div id="grahamResult" class="mt-4 text-xl font-bold text-blue-800"></div>
+    </div>
+    
+    <!-- Seção: Calculadora Avançada – Viver de Renda -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-2xl font-bold text-blue-600 mb-4">Calculadora Avançada: Viver de Renda</h2>
+      <form id="livingForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold mb-1">Renda Mensal Desejada (R$):</label>
+          <input type="number" id="desiredIncome" class="w-full border rounded p-2" placeholder="Ex.: 5000" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Taxa de Retorno Anual Esperada (%):</label>
+          <input type="number" id="expectedReturn" class="w-full border rounded p-2" placeholder="Ex.: 7" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Número de Anos para Atingir (10 a 20 anos):</label>
+          <input type="number" id="yearsToRetire" class="w-full border rounded p-2" placeholder="Ex.: 15" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Capital Inicial (R$):</label>
+          <input type="number" id="initialCapital" class="w-full border rounded p-2" placeholder="Ex.: 0" />
+        </div>
+        <div class="md:col-span-2">
+          <button type="button" onclick="calculateLivingOffIncome()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">Calcular Necessidade de Investimento</button>
+        </div>
+      </form>
+      <div id="livingResult" class="mt-4 text-xl font-bold text-blue-800"></div>
+      <canvas id="livingChart" class="mt-6"></canvas>
+    </div>
+    
+    <!-- Seção: Ações Sólidas e Fundos Imobiliários -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold text-blue-600 mb-4">Ações Sólidas Perenes e Fundos Imobiliários</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="font-bold mb-2">Ações Sólidas Perenes:</h3>
+          <ul class="list-disc list-inside space-y-2">
+            <li>ITUB4: Estabilidade e histórico consistente</li>
+            <li>PETR4: Forte presença no setor energético</li>
+            <li>VALE3: Liderança em mineração</li>
+            <li>ITSA4: Solidez financeira e bons dividendos</li>
+          </ul>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="font-bold mb-2">Fundos Imobiliários:</h3>
+          <ul class="list-disc list-inside space-y-2">
+            <li>HGLG11: Portfólio diversificado e gestão ativa</li>
+            <li>KNRI11: Excelente histórico de rendimentos</li>
+            <li>MXRF11: Foco em renda e valorização de ativos</li>
+            <li>VISC11: Investimentos em logística e varejo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <script>
+    // Calculadora Bazin
+    function calculateBazin() {
+      const dividend = parseFloat(document.getElementById('bazinDividend').value) || 0;
+      const growth = parseFloat(document.getElementById('bazinGrowth').value) || 0;
+      const discount = parseFloat(document.getElementById('bazinDiscount').value) || 0;
+      const discountRate = discount / 100;
+      const growthRate = growth / 100;
+      if (discountRate <= growthRate) {
+        document.getElementById('bazinResult').innerText = "Erro: A taxa de desconto deve ser maior que a taxa de crescimento.";
+        return;
+      }
+      const intrinsicValue = dividend / (discountRate - growthRate);
+      document.getElementById('bazinResult').innerText = `Valor Intrínseco Estimado: R$ ${intrinsicValue.toFixed(2)}`;
+    }
+    
+    // Calculadora Graham
+    function calculateGraham() {
+      const eps = parseFloat(document.getElementById('grahamEPS').value) || 0;
+      const bv = parseFloat(document.getElementById('grahamBV').value) || 0;
+      // Fórmula de Graham: √(22.5 * EPS * Book Value)
+      const intrinsicValue = Math.sqrt(22.5 * eps * bv);
+      document.getElementById('grahamResult').innerText = `Valor Intrínseco (Graham): R$ ${intrinsicValue.toFixed(2)}`;
+    }
+    
+    // Calculadora Avançada – Viver de Renda
+    let livingChart; // Variável global para o gráfico
+    function calculateLivingOffIncome() {
+      const desiredIncome = parseFloat(document.getElementById('desiredIncome').value) || 0;
+      const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) || 0;
+      const yearsToRetire = parseFloat(document.getElementById('yearsToRetire').value) || 0;
+      const initialCapital = parseFloat(document.getElementById('initialCapital').value) || 0;
+      
+      const annualReturn = expectedReturn / 100;
+      const monthlyRate = annualReturn / 12;
+      const totalMonths = yearsToRetire * 12;
+      
+      // Patrimônio necessário para gerar a renda desejada:
+      // Renda anual desejada = renda mensal * 12
+      // Patrimônio necessário = (renda anual desejada) / (annualReturn)
+      const requiredPortfolio = (desiredIncome * 12) / annualReturn;
+      
+      // Calcula o aporte mensal necessário para atingir o patrimônio requerido em "totalMonths" meses.
+      // Fórmula do valor futuro: FV = initialCapital*(1+monthlyRate)^totalMonths + contribution * ((1+monthlyRate)^totalMonths - 1)/monthlyRate
+      // Queremos que FV = requiredPortfolio e resolvemos para "contribution":
+      let monthlyContribution = 0;
+      const factor = Math.pow(1 + monthlyRate, totalMonths);
+      if (monthlyRate !== 0) {
+        monthlyContribution = (requiredPortfolio - initialCapital * factor) * monthlyRate / (factor - 1);
+      } else {
+        monthlyContribution = (requiredPortfolio - initialCapital) / totalMonths;
+      }
+      
+      // Exibe os resultados
+      document.getElementById('livingResult').innerText = `Patrimônio Necessário: R$ ${requiredPortfolio.toFixed(2)} | Aporte Mensal Necessário: R$ ${monthlyContribution.toFixed(2)}`;
+      
+      // Dados para o gráfico: evolução do patrimônio a cada ano
+      const labels = [];
+      const dataPoints = [];
+      let capital = initialCapital;
+      for (let m = 0; m <= totalMonths; m++) {
+        if (m > 0) {
+          capital = capital * (1 + monthlyRate) + monthlyContribution;
+        }
+        if (m % 12 === 0) {
+          labels.push(`Ano ${m / 12}`);
+          dataPoints.push(capital);
+        }
+      }
+      
+      const ctx = document.getElementById('livingChart').getContext('2d');
+      if (livingChart) {
+        livingChart.destroy();
+      }
+      livingChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Evolução do Patrimônio (R$)',
+            data: dataPoints,
+            borderColor: '#ED64A6',
+            backgroundColor: 'rgba(237, 100, 166, 0.2)',
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: value => `R$ ${value}`
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
